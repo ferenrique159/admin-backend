@@ -18,9 +18,9 @@ const generarJWT = (uid) => {
                 resolve(token);
             }
         });
-    })
-}
+    });
+};
 
 module.exports = {
     generarJWT
-}
+};

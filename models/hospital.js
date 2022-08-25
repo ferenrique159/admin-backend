@@ -1,34 +1,21 @@
 const { Schema, model } = require('mongoose');
 
-const UsuarioSchema = Schema({
+const HospitalSchema = Schema({
     nombre: {
-        type: String,
-        required: true
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    password: {
         type: String,
         required: true
     },
     img: {
         type: String,
     },
-    role: {
-        type: String,
-        required: true,
-        default: 'USER_ROLE'
-    },
-    google: {
-        type: Boolean,
-        default: false
+    usuario: {
+        type: Schema.Types.ObjectId,
+        require: true,
+        ref: 'Usuario'
     }
-});
+}, { collection: 'hospitales' });
 
-UsuarioSchema.method('toJSON', function() {
+HospitalSchema.method('toJSON', function() {
     const { __v, ...object } = this.toObject();
     /*object.uid = _id;
     al colocar la linea de arriba agregare por predeterminado que se muestre cierto valor en la tabla 
@@ -36,5 +23,5 @@ UsuarioSchema.method('toJSON', function() {
     return object;
 });
 
-module.exports = model('Usuario', UsuarioSchema);
+module.exports = model('Hospital', HospitalSchema);
 // por predeterminado mongoose colocara en la base de datos una "s" al final.

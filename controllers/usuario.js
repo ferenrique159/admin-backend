@@ -8,14 +8,33 @@ const { generarJWT } = require('../helpers/jwt');
 
 const getUsuarios = async(req, res) => {
 
-    const usuarios = await Usuario.find({});
+    const desde = Number(req.query.desde) || 0;
+    /*
+    const usuarios = await Usuario.find({}, 'nombre role email google')
+        .skip(desde)
+        .limit(5);
     // Al colocarle dentro de los parentesis los campos a requerir se mostraran netamente los solicitados
+    const total = await Usuario.count();
+
+
+    Aunque una manera mas eficiente para hacer dos procesos asincronos y no relantizar el codigo seria con la siguiente funcion:
+    */
+
+    const [usuarios, total] = await Promise.all([
+        Usuario
+        .find({}, 'nombre role email google img')
+        .skip(desde)
+        .limit(10),
+        Usuario.count()
+    ]);
+
 
     res.json({
         ok: true,
-        usuarios
+        usuarios,
+        total
     });
-}
+};
 
 const crearUsuarios = async(req, res = response) => {
     // Se coloca el "= response" para saber que en caso de que no haya o no responda al req o res debe de ser responde
@@ -40,7 +59,7 @@ const crearUsuarios = async(req, res = response) => {
             return res.status(400).json({
                 ok: false,
                 msg: 'El correo ya existe'
-            })
+            });
         }
 
         const usuario = new Usuario(req.body);
@@ -67,11 +86,11 @@ const crearUsuarios = async(req, res = response) => {
         res.status(500).json({
             ok: false,
             msg: 'Error inesperado... revisar los logs'
-        })
+        });
     }
 
 
-}
+};
 
 const actualizarUsuario = async(req, res = response) => {
 
@@ -87,7 +106,7 @@ const actualizarUsuario = async(req, res = response) => {
             return res.status(404).json({
                 ok: false,
                 msg: 'No existe usuario con ese id'
-            })
+            });
         }
 
         // Actualizaciones
@@ -112,7 +131,7 @@ const actualizarUsuario = async(req, res = response) => {
         res.json({
             ok: true,
             usuario: usuarioActualizado
-        })
+        });
 
     } catch (error) {
         console.log(error);
@@ -120,9 +139,9 @@ const actualizarUsuario = async(req, res = response) => {
             ok: false,
             msg: 'Error inesperado'
         });
-    };
+    }
 
-}
+};
 
 const borrarUsuario = async(req, res = response) => {
 
@@ -139,7 +158,7 @@ const borrarUsuario = async(req, res = response) => {
             });
         }
 
-        await Usuario.findByIdAndDelete(uid)
+        await Usuario.findByIdAndDelete(uid);
 
         res.json({
             ok: true,
@@ -153,7 +172,7 @@ const borrarUsuario = async(req, res = response) => {
             msg: 'Error inesperado'
         });
     }
-}
+};
 
 
 module.exports = {
@@ -161,4 +180,4 @@ module.exports = {
     crearUsuarios,
     actualizarUsuario,
     borrarUsuario
-}
+};

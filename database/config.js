@@ -14,10 +14,10 @@ const dbconnection = async() => {
     }
 
 
-}
+};
 
 module.exports = {
     dbconnection
-}
+};
 
 // contraseña nueva de usuario u_Xv5SG9Wn*rAW7

@@ -26,7 +26,7 @@ const login = async(req, res = response) => {
             return res.status(404).json({
                 ok: false,
                 msg: 'Contraseña invalida'
-            })
+            });
         }
 
         // generar JWT - Token
@@ -47,8 +47,8 @@ const login = async(req, res = response) => {
         });
     }
 
-}
+};
 
 module.exports = {
     login
-}
+};
