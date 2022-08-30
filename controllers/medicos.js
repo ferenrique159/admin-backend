@@ -39,20 +39,82 @@ const crearMedico = async(req, res = response) => {
 
 };
 
-const actualizarMedico = (req, res = response) => {
+const actualizarMedico = async(req, res = response) => {
 
-    res.status(500).json({
-        ok: true,
-        msg: 'actualizar M'
-    });
+    const id = req.params.id;
+    const uid = req.uid;
+
+    try {
+
+        const medico = await Medico.findById(id);
+
+        if (!medico) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'Error, no se encontro el id del hospital'
+            });
+        }
+
+        const cambiosMedico = {
+            //al contatenarlo con 3 punts antes de la req. nos sustrae toda la informacion del body
+            ...req.body,
+            usuario: uid,
+
+
+        };
+
+        const medicoActualizado = await Medico.findByIdAndUpdate(id, cambiosMedico, { new: true });
+
+        res.json({
+            ok: true,
+            msg: 'Medico actualizado a la siguiente información',
+            medico: medicoActualizado
+        });
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.status(400).json({
+            ok: false,
+            msg: 'Error al actualizar'
+        });
+
+    }
 };
 
-const borrarMedico = (req, res = response) => {
+const borrarMedico = async(req, res = response) => {
 
-    res.status(500).json({
-        ok: true,
-        msg: 'borrar M'
-    });
+    const id = req.params.id;
+
+    try {
+
+        const medico = await Medico.findById(id);
+
+        if (!medico) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'Error, no se encontro el id del medico'
+            });
+        }
+
+        await Medico.findByIdAndDelete(id);
+
+        res.json({
+            ok: true,
+            msg: 'El medico a sido eliminado'
+        });
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.status(400).json({
+            ok: false,
+            msg: 'Error al eliminar'
+        });
+
+    }
 };
 
 module.exports = {
